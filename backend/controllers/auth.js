@@ -2,6 +2,7 @@ const User = require("../models/User");
 const ErrorResponse = require("../utils/errorResponse");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
+
 exports.register = async (req, res, next) => {
   const { username, email, password } = req.body;
   try {
@@ -53,7 +54,9 @@ exports.forgotPassword = async (req, res, next) => {
 
     const resetToken = user.getResetPasswordToken();
     await user.save();
-    const resetUrl = `http://localhost:3000/api/auth/${resetToken}`;
+
+    //Template for the verification email
+    const resetUrl = `http://localhost:3000/passwordreset/${resetToken}`;
 
     const message = `<h1>You have requested a password reset</h1>
     <p>Please go to this link to reset your password</p>
@@ -97,8 +100,6 @@ exports.resetpassword = async (req, res, next) => {
     user.password = req.body.password;
     user.resetPasswordExpire = undefined;
     user.resetPasswordToken = undefined;
-    console.log("Body", req.body);
-    console.log("Params", req.params);
 
     await user.save();
     res.status(201).json({
