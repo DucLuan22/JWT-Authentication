@@ -7,6 +7,7 @@ import ForgotPasswordScreen from "./components/screen/ForgotPasswordScreen";
 import RegisterScreen from "./components/screen/RegisterScreen";
 import ResetScreen from "./components/screen/ResetScreen";
 import PrivateScreen from "./components/screen/PrivateScreen";
+import ConfirmScreen from "./components/screen/ConfirmScreen";
 function App() {
   return (
     <Router>
@@ -16,6 +17,10 @@ function App() {
           <Route path="/register" element={<RegisterScreen />} />
           <Route path="/forgotpassword" element={<ForgotPasswordScreen />} />
           <Route path="/passwordreset/:resetToken" element={<ResetScreen />} />
+          <Route
+            path="/confirmregistration/:confirmToken"
+            element={<ConfirmScreen />}
+          />
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<PrivateScreen />} />
           </Route>

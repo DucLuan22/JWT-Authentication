@@ -10,8 +10,55 @@ exports.register = async (req, res, next) => {
       username,
       email,
       password,
+      confirmed: false,
     });
-    sendToken(user, 201, res);
+
+    const confirmedToken = user.getConfirmedToken();
+    await user.save();
+    const confirmUrl = `http://localhost:3000/confirmregistration/${confirmedToken}`;
+    const message = `<h1>You have create a new account</h1>
+    <p>Please go to this link to confirm your  registration</p>
+    <a href=${confirmUrl} clicktracking=off/>${confirmUrl}</a>`;
+    try {
+      sendEmail({
+        to: email,
+        subject: "Confirm Registration",
+        text: message,
+      });
+      res.status(200).json({ success: true, data: "Email was send" });
+    } catch (error) {
+      user.confirmPasswordToken = undefined;
+      await user.save();
+
+      return next(new ErrorResponse("Email could not be send", 500));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.confirmRegistration = async (req, res, next) => {
+  const confirmPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.confirmToken)
+    .digest("hex");
+  try {
+    const user = await User.findOne({
+      confirmPasswordToken,
+    });
+    if (!user) {
+      return next(new ErrorResponse("Invalid confirm token", 400));
+    }
+    const jwtToken = user.getSignedToken();
+    user.confirmPasswordToken = undefined;
+    user.confirmed = true;
+
+    await user.save();
+    res.status(201).json({
+      success: true,
+      data: "Confirmed registration",
+      jwtToken,
+    });
   } catch (error) {
     next(error);
   }
@@ -31,6 +78,9 @@ exports.login = async (req, res, next) => {
       return next(new ErrorResponse("Invalid email", 400));
     }
 
+    if (user.confirmed == false) {
+      return next(new ErrorResponse("Please confirmed your account.", 400));
+    }
     const isMatch = await user.matchPasswords(password);
 
     if (!isMatch) {

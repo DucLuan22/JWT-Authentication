@@ -8,7 +8,7 @@ const RegisterScreen = () => {
   const [confirm_password, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  axios.defaults.baseURL = "http://localhost:8000/";
   useEffect(() => {
     if (localStorage.getItem("authToken")) {
       navigate("/");
@@ -40,8 +40,7 @@ const RegisterScreen = () => {
         },
         config
       );
-      localStorage.setItem("authToken", data.token);
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       setError(error.response.data.error);
       setTimeout(() => {

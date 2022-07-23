@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 const ForgotPasswordScreen = () => {
+  axios.defaults.baseURL = "http://localhost:8000";
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
   const forgotPasswordHandler = async (e) => {
     e.preventDefault();
 

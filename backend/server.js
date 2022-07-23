@@ -9,10 +9,13 @@ connectDB();
 const app = express();
 
 app.use(express.json());
-
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/private", require("./routes/private"));
-app.use(cors);
 
 //Error Handler (should be last piece of middleware)
 app.use(errorHandler);

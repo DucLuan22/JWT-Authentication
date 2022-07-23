@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const ResetScreen = () => {
@@ -8,7 +8,6 @@ const ResetScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const navigate = useNavigate();
   const params = useParams();
   const resetPasswordHandler = async (e) => {
     e.preventDefault();

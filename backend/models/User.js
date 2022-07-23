@@ -25,8 +25,12 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
       select: false,
     },
+    confirmed: {
+      type: Boolean,
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    confirmPasswordToken: String,
   },
   { timestamps: true }
 );
@@ -48,6 +52,16 @@ userSchema.methods.getSignedToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
+};
+
+userSchema.methods.getConfirmedToken = function () {
+  const confirmToken = crypto.randomBytes(20).toString("hex");
+  this.confirmPasswordToken = crypto
+    .createHash("sha256")
+    .update(confirmToken)
+    .digest("hex");
+
+  return confirmToken;
 };
 
 userSchema.methods.getResetPasswordToken = function () {
