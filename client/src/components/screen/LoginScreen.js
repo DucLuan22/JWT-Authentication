@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import Axios from "../../configs/axiosConfig";
 const LoginScreen = () => {
-  axios.defaults.baseURL = "http://localhost:8000";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -16,21 +15,12 @@ const LoginScreen = () => {
 
   const loginHandler = async (e) => {
     e.preventDefault();
-    const config = {
-      header: {
-        "Content-Type": "application/json",
-      },
-    };
 
     try {
-      const { data } = await axios.post(
-        "/api/auth/login",
-        {
-          email,
-          password,
-        },
-        config
-      );
+      const { data } = await Axios.post("/api/auth/login", {
+        email,
+        password,
+      });
       localStorage.setItem("authToken", data.token);
       navigate("/");
     } catch (error) {

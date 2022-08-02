@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import Axios from "../../configs/axiosConfig";
 import { Link, useNavigate } from "react-router-dom";
 const RegisterScreen = () => {
   const [username, setUsername] = useState("");
@@ -8,7 +8,6 @@ const RegisterScreen = () => {
   const [confirm_password, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  axios.defaults.baseURL = "http://localhost:8000/";
   useEffect(() => {
     if (localStorage.getItem("authToken")) {
       navigate("/");
@@ -17,11 +16,6 @@ const RegisterScreen = () => {
 
   const registerHandler = async (e) => {
     e.preventDefault();
-    const config = {
-      header: {
-        "Content-Type": "application/json",
-      },
-    };
     if (password !== confirm_password) {
       setPassword("");
       setConfirmPassword("");
@@ -31,15 +25,11 @@ const RegisterScreen = () => {
       return setError("Passwords do not match");
     }
     try {
-      const { data } = await axios.post(
-        "/api/auth/register",
-        {
-          username,
-          email,
-          password,
-        },
-        config
-      );
+      const { data } = await Axios.post("/api/auth/register", {
+        username,
+        email,
+        password,
+      });
       navigate("/login");
     } catch (error) {
       setError(error.response.data.error);

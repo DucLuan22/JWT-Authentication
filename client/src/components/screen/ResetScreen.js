@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import axios from "axios";
+import Axios from "../../configs/axiosConfig";
 
 const ResetScreen = () => {
-  axios.defaults.baseURL = "http://localhost:8000";
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -11,11 +10,6 @@ const ResetScreen = () => {
   const params = useParams();
   const resetPasswordHandler = async (e) => {
     e.preventDefault();
-    const config = {
-      header: {
-        "Content-Type": "application/json",
-      },
-    };
 
     if (password !== confirmPassword) {
       setPassword("");
@@ -27,12 +21,11 @@ const ResetScreen = () => {
     }
 
     try {
-      const { data } = await axios.put(
+      const { data } = await Axios.put(
         `api/auth/resetpassword/${params.resetToken}/`,
         {
           password,
-        },
-        config
+        }
       );
 
       console.log(data.data);

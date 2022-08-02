@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Axios from "../../configs/axiosConfig";
 
 const PrivateScreen = () => {
-  axios.defaults.baseURL = "http://localhost:8000";
   const [error, setError] = useState("");
   const [privateData, setPrivateData] = useState("");
   const navigate = useNavigate();
@@ -17,7 +16,7 @@ const PrivateScreen = () => {
       };
 
       try {
-        const { data } = await axios.get("/api/private", config);
+        const { data } = await Axios.get("/api/private", config);
         setPrivateData(data.data);
       } catch (error) {
         localStorage.removeItem("authToken");
